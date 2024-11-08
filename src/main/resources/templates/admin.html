@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header('Admin Dashboard')}">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: nav}"></div>
+    
+    <main class="container admin-dashboard">
+        <h1>Admin Dashboard</h1>
+        
+        <div class="stats-cards">
+            <div class="stat-card">
+                <i class="fas fa-link"></i>
+                <h3>Total URLs</h3>
+                <p th:text="${totalUrls}">0</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-check-circle"></i>
+                <h3>Active URLs</h3>
+                <p th:text="${activeUrls}">0</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-times-circle"></i>
+                <h3>Expired URLs</h3>
+                <p th:text="${expiredUrls}">0</p>
+            </div>
+        </div>
+        
+        <section class="urls-table">
+            <h2>All URLs</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Original URL</th>
+                        <th>Short URL</th>
+                        <th>Created At</th>
+                        <th>Expiry Date</th>
+                        <th>Clicks</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="url : ${allUrls}">
+                        <td th:text="${url.originalUrl}"></td>
+                        <td th:text="${url.shortUrl}"></td>
+                        <td th:text="${#temporals.format(url.createdAt, 'dd-MM-yyyy HH:mm')}"></td>
+                        <td th:text="${url.expiryDate != null ? #temporals.format(url.expiryDate, 'dd-MM-yyyy HH:mm') : 'Never'}"></td>
+                        <td th:text="${url.clickCount}"></td>
+                        <td th:text="${url.expiryDate != null && url.expiryDate.isBefore(#temporals.createNow()) ? 'Expired' : 'Active'}"
+                            th:class="${url.expiryDate != null && url.expiryDate.isBefore(#temporals.createNow()) ? 'status-expired' : 'status-active'}">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+    
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>
